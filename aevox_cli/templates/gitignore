@@ -1,0 +1,10 @@
+build/
+vcpkg_installed/
+.cache/
+.vscode/
+.idea/
+.vs/
+*.user
+*.log
+.env
+config/local.toml

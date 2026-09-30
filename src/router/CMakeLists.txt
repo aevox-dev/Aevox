@@ -20,8 +20,8 @@ add_library(aevox_router OBJECT
 
 target_include_directories(aevox_router
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/src      # for #include "router/handler_wrap.hpp" etc.
-        ${CMAKE_SOURCE_DIR}/include  # for #include <aevox/router.hpp> etc.
+        ${PROJECT_SOURCE_DIR}/src      # for #include "router/handler_wrap.hpp" etc.
+        ${PROJECT_SOURCE_DIR}/include  # for #include <aevox/router.hpp> etc.
 )
 
 # app_impl.cpp includes net/websocket_session.hpp which uses Asio.

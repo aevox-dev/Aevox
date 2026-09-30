@@ -9,6 +9,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- Installable `aevox` Python CLI with project creation, toolchain checks, recursive CMake
+  source preparation, build, run, and a Docker-ready starter application.
 - Deployment guide for Caddy and Nginx reverse-proxy setups, including TLS termination,
   WebSocket upgrade forwarding, forwarded headers, static asset caching notes, and gRPC boundary
   guidance (AEV-017)
@@ -45,6 +47,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Default JSON backend: glaze, selectable via `AEVOX_JSON_BACKEND` CMake option (AEV-009)
 
 ### Changed
+- GCC 15 release builds now compile the accept coroutine cleanly with warnings as errors.
 - API documentation site coverage now maps every public Aevox header to a navigable MkDocs API
   reference page (AEV-018)
 - Logger API simplified from request-owned `Logger` handles to free functions: use `aevox::log::info(req, "...")` for request-correlated messages and `aevox::log::info("...")` for global messages (AEV-029)

@@ -165,8 +165,11 @@ std::expected<void, aevox::ExecutorError> AsioExecutor::listen(
 asio::awaitable<void> AsioExecutor::run_accept_loop(AcceptLoop& loop)
 {
     for (;;) {
-        auto [ec, socket] =
-            co_await loop.acceptor.async_accept(asio::as_tuple(asio::use_awaitable));
+        // Keep the completion result named across suspension. GCC 15 otherwise
+        // diagnoses the destructured coroutine temporary as uninitialized.
+        auto completion    = asio::as_tuple(asio::use_awaitable);
+        auto accepted      = co_await loop.acceptor.async_accept(completion);
+        auto& [ec, socket] = accepted;
 
         if (ec) {
             if (ec == asio::error::operation_aborted || ec == asio::error::bad_descriptor)

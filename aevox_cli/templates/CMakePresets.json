@@ -1,0 +1,45 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {"major": 3, "minor": 27, "patch": 0},
+  "configurePresets": [
+    {
+      "name": "linux-debug",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/linux-debug",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "condition": {"type": "equals", "lhs": "${hostSystemName}", "rhs": "Linux"},
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "g++",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "VCPKG_MANIFEST_DIR": "${sourceDir}/vendor/aevox"
+      }
+    },
+    {
+      "name": "linux-release",
+      "inherits": "linux-debug",
+      "binaryDir": "${sourceDir}/build/linux-release",
+      "cacheVariables": {"CMAKE_BUILD_TYPE": "Release"}
+    },
+    {
+      "name": "windows-debug",
+      "generator": "Visual Studio 17 2022",
+      "architecture": {"value": "x64", "strategy": "set"},
+      "binaryDir": "${sourceDir}/build/windows-debug",
+      "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake",
+      "condition": {"type": "equals", "lhs": "${hostSystemName}", "rhs": "Windows"},
+      "cacheVariables": {"VCPKG_MANIFEST_DIR": "${sourceDir}/vendor/aevox"}
+    },
+    {
+      "name": "windows-release",
+      "inherits": "windows-debug",
+      "binaryDir": "${sourceDir}/build/windows-release"
+    }
+  ],
+  "buildPresets": [
+    {"name": "linux-debug", "configurePreset": "linux-debug"},
+    {"name": "linux-release", "configurePreset": "linux-release"},
+    {"name": "windows-debug", "configurePreset": "windows-debug", "configuration": "Debug"},
+    {"name": "windows-release", "configurePreset": "windows-release", "configuration": "Release"}
+  ]
+}

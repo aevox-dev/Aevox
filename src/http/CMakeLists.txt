@@ -23,8 +23,8 @@ add_library(aevox_http OBJECT
 
 target_include_directories(aevox_http
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/src    # for #include "http/http_parser.hpp" from within src/
-        ${CMAKE_SOURCE_DIR}/include  # for aevox/* public headers (Task<T> etc.)
+        ${PROJECT_SOURCE_DIR}/src    # for #include "http/http_parser.hpp" from within src/
+        ${PROJECT_SOURCE_DIR}/include  # for aevox/* public headers (Task<T> etc.)
 )
 
 target_compile_features(aevox_http

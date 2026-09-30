@@ -1,0 +1,9 @@
+.git
+**/.git
+build
+**/build
+vcpkg_installed
+**/vcpkg_installed
+.env
+.vscode
+.idea

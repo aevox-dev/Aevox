@@ -13,10 +13,10 @@ add_library(aevox_grpc_plugin STATIC
 
 target_include_directories(aevox_grpc_plugin
     PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
     PRIVATE
-        ${CMAKE_SOURCE_DIR}/src
+        ${PROJECT_SOURCE_DIR}/src
         ${CMAKE_CURRENT_SOURCE_DIR}
 )
 

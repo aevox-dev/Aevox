@@ -72,9 +72,13 @@ option(AEVOX_ENABLE_GRPC "Build the official Aevox gRPC plugin" OFF)
 # ── Testing ───────────────────────────────────────────────────────────────────
 # enable_testing() must live here (root) so that `ctest` invoked from the root
 # build directory discovers all registered tests across all subdirectories.
-enable_testing()
+if(PROJECT_IS_TOP_LEVEL)
+    enable_testing()
+endif()
 
 # ── Subdirectories ────────────────────────────────────────────────────────────
 add_subdirectory(src)
-add_subdirectory(tests)
-add_subdirectory(examples)  # always built — examples are the canonical public-API smoke test
+if(PROJECT_IS_TOP_LEVEL)
+    add_subdirectory(tests)
+    add_subdirectory(examples)  # standalone builds retain the public-API smoke tests
+endif()

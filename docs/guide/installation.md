@@ -69,7 +69,13 @@ All tests should pass. The suite includes unit tests, integration tests (real lo
 
 ## CMake Integration
 
-Aevox does not yet ship an install target or a find-package config. The recommended way to use Aevox as a dependency today is via vcpkg. Add the repository as a vcpkg port or build from source and include the build directory directly.
+Aevox does not yet ship an install target or a find-package config. The
+[project CLI](cli.md) creates an application with Aevox as a Git submodule and
+links `aevox_core` directly from the source tree. For a hand-written CMake
+project, add the Aevox source with `add_subdirectory(vendor/aevox)` and link
+`aevox_core`. The Aevox tests and examples are built only when Aevox is the
+top-level CMake project. Set `VCPKG_MANIFEST_DIR` to `vendor/aevox` before
+configuring so vcpkg sees the framework's dependency manifest.
 
 When a proper install target is added in a future release, the integration will look like:
 

@@ -64,7 +64,7 @@ add_library(aevox_core STATIC
 target_include_directories(aevox_core
     PUBLIC
         # Build tree: resolve to <project-root>/include
-        $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/include>
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
         # Install tree: resolved by install(EXPORT ...) — configured by a future task
         $<INSTALL_INTERFACE:include>
     PRIVATE

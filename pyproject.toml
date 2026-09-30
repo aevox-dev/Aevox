@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aevox-cli"
+version = "0.1.0"
+description = "Create, build, and run Aevox C++ web applications"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{name = "Aevox contributors"}]
+dependencies = []
+
+[project.scripts]
+aevox = "aevox_cli.cli:main"
+
+[tool.setuptools]
+packages = ["aevox_cli"]
+
+[tool.setuptools.package-data]
+aevox_cli = ["templates/*"]

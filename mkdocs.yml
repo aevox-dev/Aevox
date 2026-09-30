@@ -28,6 +28,7 @@ nav:
   - User Guide:
       - Overview: guide/index.md
       - Installation: guide/installation.md
+      - Project CLI: guide/cli.md
       - First HTTP Server: guide/first-http-server.md
       - Routing: guide/routing.md
       - Request and Response: guide/request-response.md
