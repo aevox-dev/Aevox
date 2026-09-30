@@ -272,6 +272,21 @@ App::App(AppConfig config) : impl_{std::make_unique<Impl>()}
 {
     impl_->config   = std::move(config);
     impl_->executor = make_executor(impl_->config.executor);
+
+    // Install logging before application code registers routes or emits startup
+    // messages. App::create() uses this constructor after merging its TOML file.
+    auto log_writer = aevox::detail::LogWriter::create(impl_->config.logging);
+    if (!log_writer) {
+        std::cerr << "aevox: logging disabled: " << aevox::to_string(log_writer.error()) << '\n';
+        impl_->log_writer = make_disabled_log_writer();
+    }
+    else {
+        impl_->log_writer = *log_writer;
+    }
+
+    if (impl_->log_writer) {
+        aevox::detail::install_log_writer(impl_->log_writer);
+    }
 }
 
 App::~App()
@@ -286,8 +301,15 @@ App::~App()
     if (impl_ && impl_->executor) {
         impl_->executor->stop();
     }
-    aevox::detail::reset_log_writer();
     if (impl_) {
+        if (impl_->log_writer) {
+            const auto flush_result = aevox::log::flush();
+            if (!flush_result) {
+                std::cerr << "aevox: logging flush failed: "
+                          << aevox::to_string(flush_result.error()) << '\n';
+            }
+            aevox::detail::reset_log_writer();
+        }
         impl_->log_writer.reset();
     }
 }
@@ -390,20 +412,6 @@ void App::listen(std::uint16_t port)
 
     // Capture App-owned services by reference; App::Impl outlives active connections.
     aevox::net::TopicBus& topic_bus = impl_->topic_bus;
-
-    // Initialise async logging subsystem from config.
-    auto log_writer = aevox::detail::LogWriter::create(impl_->config.logging);
-    if (!log_writer) {
-        std::cerr << "aevox: logging disabled: " << aevox::to_string(log_writer.error()) << '\n';
-        impl_->log_writer = make_disabled_log_writer();
-    }
-    else {
-        impl_->log_writer = *log_writer;
-    }
-
-    if (impl_->log_writer) {
-        aevox::detail::install_log_writer(impl_->log_writer);
-    }
 
     auto connection_handler = [max_body, max_header_cnt, max_read, &router, &global_mw, &scoped_mw,
                                &topic_bus](std::uint64_t /*conn_id*/,

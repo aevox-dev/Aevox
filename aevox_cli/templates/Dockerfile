@@ -17,7 +17,9 @@ RUN cmake --preset linux-release -DCMAKE_CXX_COMPILER=g++-13 && \
 FROM ubuntu:24.04
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libstdc++6 && rm -rf /var/lib/apt/lists/*
+WORKDIR /app
 COPY --from=builder /app/build/linux-release/src/{{PROJECT_NAME}} /usr/local/bin/{{PROJECT_NAME}}
+COPY --from=builder /app/aevox.toml /app/aevox.toml
 ENV AEVOX_HOST=0.0.0.0 AEVOX_PORT=8080
 EXPOSE 8080
 CMD ["/usr/local/bin/{{PROJECT_NAME}}"]

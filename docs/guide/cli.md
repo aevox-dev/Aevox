@@ -10,7 +10,7 @@ With pipx and Git installed, this
 single command installs the CLI and places `aevox` on your command path:
 
 ```text
-pipx install git+https://github.com/MohammadMokhalled/Aevox.git
+pipx install git+https://github.com/aevox-dev/Aevox.git@feat/aevox-cli
 ```
 
 The command is the same in Bash, PowerShell, and Command Prompt. If pipx was
@@ -46,6 +46,15 @@ offers `/` and `/health`. The `public/` and `templates/` directories are a
 conventional place for application files; wire your handlers or middleware to
 them as the app grows.
 
+The project root also contains `aevox.toml`. Edit it and restart the app to
+change runtime settings and `[logging]` without recompiling. The starter calls
+`App::create()` with that file and prints an error if it is missing or invalid.
+`aevox run --config config/production.toml` selects another TOML file.
+`AEVOX_CONFIG` can set the path when launching the executable directly.
+Values explicitly set in TOML take precedence over `AEVOX_PORT` and
+`AEVOX_HOST`; the default file leaves port and host commented out so
+`aevox run --port 9090` works immediately.
+
 ## Commands
 
 | Command | Action |
@@ -54,13 +63,14 @@ them as the app grows.
 | `aevox doctor [--project DIR]` | Check CMake, Git, compiler, generator, vcpkg, and project submodule. |
 | `aevox prepare [--project DIR]` | Recursively find C/C++ sources and headers in `src/` and `include/`, then refresh `cmake/AevoxSources.cmake`. |
 | `aevox build [-p] [--release] [--jobs N]` | Configure with vcpkg and compile. `-p` runs `prepare` first. |
-| `aevox run [--release] [--port N] [--host ADDRESS] [--no-build]` | Prepare, build, and launch. `--no-build` runs an existing binary. |
+| `aevox run [--release] [--port N] [--host ADDRESS] [--config FILE] [--no-build]` | Prepare, build, and launch. `--no-build` runs an existing binary. |
 
 Run these inside the project, or add `--project DIR` to `doctor`, `prepare`,
 `build`, or `run`. Use `aevox run -- ARG...` to pass arguments to the native
-executable. The starter reads `AEVOX_PORT` and `AEVOX_HOST`; `run --port` and
-`--host` set them for that process. Your own `main.cpp` can keep or replace
-this convention.
+executable. The starter reads `AEVOX_PORT`, `AEVOX_HOST`, and `AEVOX_CONFIG`;
+`run --port`, `--host`, and `--config` set them for that process. Your own
+`main.cpp` can keep or replace this convention. Log after `App` construction
+or `App::create()`, because no writer is installed before an App exists.
 
 `prepare` scans nested application CMake files for literal filenames already
 assigned to custom targets. It records the remaining source and header files
@@ -84,4 +94,5 @@ The image installs GCC, CMake, Ninja, and vcpkg, builds the release target,
 and runs the native executable on port 8080. Initial image builds take longer
 because vcpkg compiles the framework dependencies. Change the mapped host
 port with `-p 9090:8080`, or set the container port with `-e AEVOX_PORT=9090`
-and map `-p 9090:9090`.
+and map `-p 9090:9090`. The runtime image includes `aevox.toml` at `/app`;
+you can mount another file there to change settings without rebuilding the image.

@@ -1,0 +1,13 @@
+# Runtime settings for this Aevox application. Edit and restart; no rebuild is needed.
+# Any omitted setting uses the Aevox default. Values in this file take precedence
+# over AEVOX_PORT and AEVOX_HOST when the corresponding key is present.
+# port = 8080
+# host = "0.0.0.0"
+
+[logging]
+enabled = true
+level = "info"
+format = "pretty"
+destination = "stdout"
+
+# For file output, use destination = "file" and set file_path = "app.log".

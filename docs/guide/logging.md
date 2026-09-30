@@ -33,6 +33,10 @@ Use global functions for startup and background work:
 aevox::log::info("Server starting on port {}", port);
 ```
 
+Create `aevox::App` (or call `App::create()` to load TOML) before sending this
+startup message. The App installs its configured writer during construction;
+log calls made before any App exists have no destination and are dropped.
+
 Pass a request when the log line should be correlated:
 
 ```cpp

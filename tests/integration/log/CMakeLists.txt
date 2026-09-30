@@ -20,3 +20,4 @@ endfunction()
 
 add_log_integration_test(logger-middleware)
 add_log_integration_test(logger-file-output)
+add_log_integration_test(logger-startup)

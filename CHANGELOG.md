@@ -9,6 +9,7 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### Added
+- New CLI projects include an editable root `aevox.toml` and load it at startup.
 - Installable `aevox` Python CLI with project creation, toolchain checks, recursive CMake
   source preparation, build, run, and a Docker-ready starter application.
 - Deployment guide for Caddy and Nginx reverse-proxy setups, including TLS termination,
@@ -47,6 +48,8 @@ Versioning follows [Semantic Versioning](https://semver.org/).
 - Default JSON backend: glaze, selectable via `AEVOX_JSON_BACKEND` CMake option (AEV-009)
 
 ### Changed
+- Aevox initializes logging when `App` is constructed, so startup messages issued
+  before `listen()` are written with the configured level and destination.
 - GCC 15 release builds now compile the accept coroutine cleanly with warnings as errors.
 - API documentation site coverage now maps every public Aevox header to a navigable MkDocs API
   reference page (AEV-018)

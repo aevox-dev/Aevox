@@ -2,12 +2,14 @@
 
 from __future__ import annotations
 
+import os
 import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
-from aevox_cli.cli import main
+from aevox_cli.cli import main, run_project
 from aevox_cli.prepare import prepare_project
 from aevox_cli.scaffold import create_project
 
@@ -33,6 +35,8 @@ class ProjectCliTests(unittest.TestCase):
         self.assertIn("vendor/aevox", (project / ".gitmodules").read_text(encoding="utf-8"))
         self.assertTrue((project / "vendor/aevox/vcpkg.json").is_file())
         self.assertTrue((project / "public/index.html").is_file())
+        self.assertIn('level = "info"', (project / "aevox.toml").read_text(encoding="utf-8"))
+        self.assertIn('App::create', (project / "src/main.cpp").read_text(encoding="utf-8"))
         self.assertIn("src/main.cpp", (project / "cmake/AevoxSources.cmake").read_text(encoding="utf-8"))
         staged = subprocess.run(["git", "-C", str(project), "diff", "--cached", "--name-only"],
                                 text=True, capture_output=True, check=True).stdout
@@ -61,6 +65,20 @@ class ProjectCliTests(unittest.TestCase):
         self.assertEqual(main(["create", "bad-name", "--path", str(self.root),
                                "--aevox-url", str(self.framework)]), 1)
         self.assertFalse((self.root / "bad-name").exists())
+
+    def test_run_passes_selected_toml_path_to_application(self) -> None:
+        project = create_project("sample_app", self.root, str(self.framework))
+        binary = project / "build" / ("windows-debug" if os.name == "nt" else "linux-debug") / "src"
+        if os.name == "nt":
+            binary = binary / "Debug"
+        binary.mkdir(parents=True)
+        (binary / ("sample_app.exe" if os.name == "nt" else "sample_app")).touch()
+
+        with patch("aevox_cli.cli.subprocess.run") as command:
+            command.return_value.returncode = 0
+            self.assertEqual(run_project(project, False, False, None, None, None,
+                                         Path("alternative.toml"), []), 0)
+        self.assertEqual(command.call_args.kwargs["env"]["AEVOX_CONFIG"], "alternative.toml")
 
 
 if __name__ == "__main__":

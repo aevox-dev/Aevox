@@ -11,7 +11,7 @@ from pathlib import Path
 
 from .prepare import prepare_project
 
-AEVOX_URL = "https://github.com/MohammadMokhalled/Aevox.git"
+AEVOX_URL = "https://github.com/aevox-dev/Aevox.git"
 TEMPLATES = files("aevox_cli").joinpath("templates")
 PROJECT_NAME = re.compile(r"^[A-Za-z][A-Za-z0-9_]*$")
 RESERVED_NAMES = {
@@ -42,6 +42,7 @@ def create_project(name: str, parent: Path, aevox_url: str = AEVOX_URL,
             ("CMakePresets.json", "CMakePresets.json"),
             ("src.CMakeLists.txt", "src/CMakeLists.txt"),
             ("main.cpp", "src/main.cpp"),
+            ("aevox.toml", "aevox.toml"),
             ("gitignore", ".gitignore"),
             ("dockerignore", ".dockerignore"),
             ("Dockerfile", "Dockerfile"),

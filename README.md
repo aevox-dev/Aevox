@@ -9,7 +9,7 @@ A high-performance C++23 web framework targeting 1M+ HTTP/1.1 requests/second on
 
 ## Create an application
 
-Install the Python CLI with `pipx install git+https://github.com/MohammadMokhalled/Aevox.git`
+Install the Python CLI with `pipx install git+https://github.com/aevox-dev/Aevox.git@feat/aevox-cli`
 on Linux or Windows. Then run:
 
 ```text

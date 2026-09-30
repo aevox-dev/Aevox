@@ -81,13 +81,13 @@ def build_project(project: Path, release: bool, prepare: bool, jobs: int | None)
 
 
 def run_project(project: Path, release: bool, build: bool, jobs: int | None,
-                port: int | None, host: str | None, args: list[str]) -> int:
+                port: int | None, host: str | None, config: Path | None, args: list[str]) -> int:
     """Build when needed and launch the native executable with passthrough args."""
     if build:
         build_project(project, release, prepare=True, jobs=jobs)
-    config = "Release" if release else "Debug"
+    build_configuration = "Release" if release else "Debug"
     binary = (project / "build" / _preset(release) / "src" /
-              (config if os.name == "nt" else "") /
+              (build_configuration if os.name == "nt" else "") /
               (project.name + (".exe" if os.name == "nt" else "")))
     if not binary.is_file():
         raise FileNotFoundError(f"{binary} is missing; run aevox build -p")
@@ -96,6 +96,8 @@ def run_project(project: Path, release: bool, build: bool, jobs: int | None,
         env["AEVOX_PORT"] = str(port)
     if host is not None:
         env["AEVOX_HOST"] = host
+    if config is not None:
+        env["AEVOX_CONFIG"] = str(config)
     return subprocess.run([str(binary), *args], cwd=project, env=env, check=False).returncode
 
 
@@ -126,6 +128,7 @@ def _parser() -> argparse.ArgumentParser:
             command.add_argument("--no-build", action="store_true", help="run an existing binary")
             command.add_argument("--port", type=int, choices=range(1, 65536), metavar="PORT")
             command.add_argument("--host", help="bind address")
+            command.add_argument("--config", type=Path, help="TOML file (default: aevox.toml)")
             command.add_argument("args", nargs=argparse.REMAINDER, help="arguments after -- passed to the app")
     return parser
 
@@ -150,7 +153,7 @@ def main(argv: list[str] | None = None) -> int:
                 raise ValueError("--jobs must be positive")
             passed = args.args[1:] if args.args[:1] == ["--"] else args.args
             return run_project(args.project.resolve(), args.release, not args.no_build,
-                               args.jobs, args.port, args.host, passed)
+                               args.jobs, args.port, args.host, args.config, passed)
     except (FileExistsError, FileNotFoundError, OSError, ValueError) as error:
         print(f"aevox: {error}", file=sys.stderr)
         return 1
